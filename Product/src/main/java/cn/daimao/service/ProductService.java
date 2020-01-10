@@ -1,6 +1,7 @@
 package cn.daimao.service;
 
 import cn.daimao.mapper.ProductMapper;
+import config.ProductMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,9 +33,6 @@ public class ProductService {
         mapper.add(product);
     }
 
-
-
-
     @Value("${disk.path}")
     private String diskPath;
     @Value("${url.path}")
@@ -45,7 +43,7 @@ public class ProductService {
 
         String extName =filename.substring(filename.lastIndexOf("."));
         if (!extName.matches(".(jpg|png|gif)")){
-            return "图片格式错误";
+            return ProductMessage.UpLoadFormatError;
         }
         String dir = "/"+ UploadUtil.getUploadPath(filename,"upload")+"/";
         //3 根据公用路径 nginx 访问的静态文件 位置 C:/img 生成文件夹
@@ -60,7 +58,7 @@ public class ProductService {
             return urlPath+dir+name;
         } catch (IOException e) {
             e.printStackTrace();
-            return "你吗的，为什么又失败了？";
+            return e.toString();
         }
     }
 

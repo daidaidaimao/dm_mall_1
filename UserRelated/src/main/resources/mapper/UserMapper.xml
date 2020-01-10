@@ -12,4 +12,17 @@
     <select id="queryByName" resultType="java.lang.Integer">
         select count(*) from u_user where username=#{username}
     </select>
+    
+    <insert id="addDetail" >
+        insert into u_detail values (#{username},#{avatarUrl},#{gender},#{name},#{phone},#{email},#{createTime})
+    </insert>
+
+    <select id="queryDetail" resultType="pojo.Person">
+        select * from u_detail where username = #{username}
+    </select>
+
+    <update id="editDetail">
+        update u_detail set avatar_url = #{avatarUrl},gender = #{gender},name = #{name},email = #{email},phone = #{phone}
+        where username = #{username}
+    </update>
 </mapper>

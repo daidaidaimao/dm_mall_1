@@ -1,6 +1,7 @@
 package cn.daimao.controller;
 
 import cn.daimao.service.ProductService;
+import config.ProductMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,33 +39,28 @@ public class ProductController {
     public String upload(MultipartFile pic){
 //        System.out.println(pic.getOriginalFilename());
         if(!pic.isEmpty()) {
-
             return service.upload(pic);
-        }
-        else{
-            System.out.println("失败");
-            return "fail";
-        }
+        }else
+            return ProductMessage.UploadError;
     }
     @RequestMapping("/delete")
-    public String delete(String productId){
+    public SysResult delete(String productId){
         try {
             service.delete(productId);
-            return "success";
+            return SysResult.build(200,ProductMessage.DeleteSuccess,null);
         } catch (Exception e) {
             e.printStackTrace();
-            return "fall";
+            return SysResult.build(201,ProductMessage.DeleteFail+e.toString(),null);
         }
-
     }
     @RequestMapping("/update")
     public SysResult update(Product p){
         try {
             service.update(p);
-            return SysResult.ok();
+            return SysResult.build(200,ProductMessage.EditSuccess,null);
         } catch (Exception e) {
             e.printStackTrace();
-            return SysResult.build(201,e.toString(),null);
+            return SysResult.build(201,ProductMessage.EditFail+e.toString(),null);
         }
     }
     @RequestMapping("/queryOne")
