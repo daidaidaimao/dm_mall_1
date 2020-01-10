@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.daimao.mapper.testMapper">
+
+    <select id="getAll" resultType="pojo.Student">
+        select * from student;
+    </select>
+
+    <insert id="register" >
+        insert into student values (#{id},#{name},#{age},#{other})
+    </insert>
+
+    <select id="login" resultType="java.lang.Boolean">
+        select count(id) from user where username = #{username} and password = #{password}
+    </select>
+</mapper>

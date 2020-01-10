@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.daimao.mapper.TreeMapper">
+    <select id="showAll" resultType="pojo.Category">
+        select * from t_category
+    </select>
+    <select id="queryByCate" resultType="pojo.Product">
+        select * from t_product where product_category = #{productCategory}
+    </select>
+
+
+
+
+    <select id="total" resultType="java.lang.Integer">
+        select count(product_id) from t_product where product_category=#{productCategory}
+    </select>
+    <insert id="addNode">
+        insert into t_category values (
+                                       #{id},
+                                       #{parentId},
+                                       #{name}
+                                      )
+    </insert>
+    <delete id="deleteNode">
+        delete from t_category where id = #{id}
+    </delete>
+
+    <select id="queryParent" resultType="pojo.Category">
+        select * from t_category where parent_id = #{id};
+    </select>
+
+    <select id="query" resultType="pojo.Category">
+        select * from t_category where id = #{id}
+    </select>
+
+    <select id="queryChild" resultType="java.lang.String">
+        select getChildList(#{id}) as ids
+    </select>
+
+
+
+
+</mapper>
