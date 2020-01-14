@@ -13,4 +13,5 @@ public class Product {
     private String productDescription;
     private Integer sale;
     private String categoryName;
+    private String quill;
 }
