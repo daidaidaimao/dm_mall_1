@@ -10,4 +10,13 @@ public class ProductMessage {
     public static final String EditSuccess = "商品修改成功";
     public static final String EditFail = "商品修改失败，原因：";
 
+    public static final Integer UnderReview = 0;
+    public static final Integer ReviewSuccess = 1 ;
+    public static final Integer ReviewFail = 2 ;
+
+    public static final Integer OnShelves = 1;      //上架中
+    public static final Integer NotOnShelves = 0;   //下架中
+
+    public static final String StatusChangeSuccess = "商品状态修改成功";
+
 }

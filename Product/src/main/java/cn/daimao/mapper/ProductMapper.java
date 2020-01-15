@@ -11,6 +11,8 @@ import java.util.List;
 public interface ProductMapper {
     List<Product> queryAll();
 
+    List<Product> queryFront();
+
     void add(Product product);
 
     void delete(String productId);
@@ -21,7 +23,11 @@ public interface ProductMapper {
 
     List<Product> fenye(@Param("start") Integer start,@Param("num") Integer num);
 
+    List<Product> fenyeFront(@Param("start") Integer start,@Param("num")Integer num);
+
     Integer total();
+
+    Integer totalFront();
 
     Category queryNode(Integer id);
 

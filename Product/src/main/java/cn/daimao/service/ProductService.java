@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pojo.Approval;
 import pojo.Category;
 import pojo.Product;
 import utils.PageResult;
+import utils.SysResult;
 import utils.UploadUtil;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +26,7 @@ public class ProductService {
     private ProductMapper mapper;
 
     public List<Product> queryAll() {
-        return mapper.queryAll();
+        return mapper.queryFront();
     }
 
     public void add(Product product) {
@@ -31,6 +34,7 @@ public class ProductService {
         product.setCategoryName("");
         product.setSale(0);
         product.setQuill("暂无 待编辑");
+        product.setProductStatus(ProductMessage.NotOnShelves);
         mapper.add(product);
     }
 
@@ -104,6 +108,41 @@ public class ProductService {
         result.setRows(plist);
         return result;
     }
+
+    public SysResult changeStatus(Product product) {
+        if (product.getProductStatus() == 0)
+            product.setProductStatus(ProductMessage.OnShelves);
+        else
+            product.setProductStatus(ProductMessage.NotOnShelves);
+        mapper.update(product);
+        return SysResult.build(200,ProductMessage.StatusChangeSuccess,null);
+    }
+
+    public PageResult front(Integer page, Integer num) {
+        PageResult result = new PageResult();
+        Integer total =mapper.totalFront();
+        result.setTotal(total);
+        Integer start = (page-1)*num;
+        List<Product> plist = mapper.fenyeFront(start,num);
+        result.setRows(plist);
+        return result;
+    }
+
+//    public SysResult addApproval(Approval approval) {
+//        String name ="";
+//        Product p = approval.getProductMessage();
+//        Integer id  = p.getProductCategory();
+//        String pid = mapper.queryParent(id);
+//        for (String s :pid.split(",")){
+//            Category c = mapper.queryNode(Integer.parseInt(s));
+//            if (c!=null&&!c.getName().equals("商品分类"))
+//                name = c.getName()+"/"+name;
+//        }
+//        p.setCategoryName(name);
+//        approval.setCreateTime(new Date());
+//        approval.setStatus(ProductMessage.UnderReview);
+//        return SysResult.build(200,"",approval);
+//    }
 //            String name = initCateName(id);
 //            String name = initCateName(c);
 //            String name = c.getName();

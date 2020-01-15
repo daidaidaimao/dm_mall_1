@@ -3,9 +3,11 @@ package cn.daimao.controller;
 import cn.daimao.service.ProductService;
 import config.ProductMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import pojo.Approval;
 import pojo.Product;
 import utils.PageResult;
 import utils.SysResult;
@@ -71,5 +73,25 @@ public class ProductController {
     @RequestMapping("/page")
     public PageResult fenye(Integer page, Integer num){
         return service.fenye(page,num);
+    }
+
+    @RequestMapping("/pageFront")
+    public PageResult front(Integer page,Integer num){
+        return service.front(page,num);
+    }
+
+//    @RequestMapping("/addApproval")
+//    public SysResult addApproval(@RequestBody Approval approval){
+//        return service.addApproval(approval);
+//    }
+//
+//    @RequestMapping("test")
+//    public SysResult test(Object o){
+//        return SysResult.build(200,"nimade",o);
+//    }
+
+    @RequestMapping("/editStatus")
+    public SysResult changgeStatus(Product product){
+        return service.changeStatus(product);
     }
 }
