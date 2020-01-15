@@ -56,13 +56,14 @@ public class UserService {
                 return LoginMessage.PassworddError;
             }
         }else{
-            String userloginlock = "user_login_lock_"+exist.getUserId();
-            String ticket ="TICKET"+System.currentTimeMillis()+exist.getUsername();
-            if (redisTemplate.hasKey(userloginlock)){
-                String oldticket = redisTemplate.opsForValue().get(userloginlock);
-                redisTemplate.delete(oldticket);
-            }
-            redisTemplate.opsForValue().set(userloginlock,ticket,200, TimeUnit.SECONDS);
+//            String userloginlock = "user_login_lock_"+exist.getUserId();
+            String ticket ="TICKET"+UUID.randomUUID().toString()+exist.getUsername();
+//            if (redisTemplate.hasKey(userloginlock)){
+//                String oldticket = redisTemplate.opsForValue().get(userloginlock);
+//                redisTemplate.delete(oldticket);
+//            }
+//            String nTicket = "TICKET"+System.currentTimeMillis()+exist.getUsername();
+//            redisTemplate.opsForValue().set(userloginlock,ticket,200, TimeUnit.SECONDS);
             try {
                 String userJson = MapperUtils.MP.writeValueAsString(exist);
                 redisTemplate.opsForValue().set(ticket,userJson,200,TimeUnit.SECONDS);
@@ -79,12 +80,12 @@ public class UserService {
         String userJson = redisTemplate.opsForValue().get(ticket);
         if (lefttime!=null&&userJson!=null){
         try {
-            User user =MapperUtils.MP.readValue(userJson,User.class);
+//            User user =MapperUtils.MP.readValue(userJson,User.class);
             Long leasetime = (long) 60;
             if (lefttime<=leasetime){
                 lefttime = lefttime + 60*3L;
                 redisTemplate.expire(ticket,lefttime,TimeUnit.SECONDS);
-                redisTemplate.expire("user_login_lock_"+user.getUserId(),lefttime,TimeUnit.SECONDS);
+//                redisTemplate.expire("user_login_lock_"+user.getUserId(),lefttime,TimeUnit.SECONDS);
             }
             return userJson;
         } catch (Exception e) {
@@ -114,5 +115,11 @@ public class UserService {
             e.printStackTrace();
             return SysResult.build(201,LoginMessage.AddDetailFail+e.toString(),null);
         }
+    }
+
+    public SysResult remove(String ticket) {
+        redisTemplate.expire(ticket,0,TimeUnit.SECONDS);
+        return SysResult.build(200,"退出成功",null);
+
     }
 }

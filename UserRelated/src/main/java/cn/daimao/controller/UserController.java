@@ -39,22 +39,16 @@ public class UserController {
             CookieUtils.setCookie(request,response,"TICKET",ticket);
             return SysResult.build(200, LoginMessage.LoginSuccess,null);
         }
-
     }
     @RequestMapping("out")
-    public SysResult out(HttpServletRequest request,HttpServletResponse response){
-        try {
-            CookieUtils.deleteCookie(request,response,"TICKET");
-            return SysResult.build(200,LoginMessage.LoginOutSuccess,null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return SysResult.build(201,LoginMessage.LoginOutFail+e.toString(),null);
-        }
+    public SysResult out(String ticket){
+            return service.remove(ticket);
     }
     @RequestMapping("query/{ticket}")
-    public SysResult queryUser(@PathVariable String ticket){
+    public SysResult queryUser(@PathVariable String ticket,HttpServletRequest request,HttpServletResponse response){
         String userJson =service.queryJson(ticket);
         if (userJson==null) {
+            CookieUtils.deleteCookie(request,response,"TICKET");
             return SysResult.build(201, LoginMessage.TimeOut,null);
         }else{
             return SysResult.build(200,LoginMessage.NotTimeOut,userJson);
