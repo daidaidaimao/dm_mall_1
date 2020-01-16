@@ -19,4 +19,8 @@ public interface UserMapper {
     Person queryDetail(String username);
 
     void editDetail(Person person);
+
+    String queryUsername(String userId);
+
+    String queryUserId(String username);
 }

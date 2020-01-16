@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.daimao.mapper.CartMapper">
+    <insert id="addCart" >
+        insert into u_cart values (
+                                   #{id},#{username},#{productId},#{productImgurl},#{productNum},#{productPrice},#{productName}
+                                  )
+    </insert>
+
+    <select id="queryExist" resultType="int">
+        select count(id) from u_cart where product_id=#{productId} and username = #{username}
+    </select>
+
+    <update id="addNum">
+        update u_cart set product_num = product_num + #{productNum};
+    </update>
+
+    <select id="showCart" resultType="pojo.Cart">
+        select * from u_cart where username = #{username};
+    </select>
+
+    <delete id="deleteCart">
+        delete from u_cart where id=#{id}
+    </delete>
+
+    <update id="updateNum">
+        update u_cart set product_num = #{productNum} where id=#{id}
+    </update>
+</mapper>

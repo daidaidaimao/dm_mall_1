@@ -25,4 +25,12 @@
         update u_detail set avatar_url = #{avatarUrl},gender = #{gender},name = #{name},email = #{email},phone = #{phone}
         where username = #{username}
     </update>
+
+    <select id="queryUsername" resultType="string">
+        select username from u_user where user_id=#{userId}
+    </select>
+
+    <select id="queryUserId" resultType="string">
+        select user_id from u_user where username = #{username}
+    </select>
 </mapper>

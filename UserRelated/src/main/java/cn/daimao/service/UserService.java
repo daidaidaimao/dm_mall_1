@@ -122,4 +122,12 @@ public class UserService {
         return SysResult.build(200,"退出成功",null);
 
     }
+
+    public String queryUsername(String userId) {
+        return mapper.queryUsername(userId);
+    }
+
+    public String queryUserId(String username) {
+        return mapper.queryUserId(username);
+    }
 }

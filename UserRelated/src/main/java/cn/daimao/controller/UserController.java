@@ -64,4 +64,13 @@ public class UserController {
     public SysResult addDetail(Person person){
         return service.addDetail(person);
     }
+
+    @RequestMapping("queryUserId")
+    public String queryUserId(String username){
+        return service.queryUserId(username);
+    }
+    @RequestMapping("queryUsername")
+    public String queryUsername(String userId){
+        return service.queryUsername(userId);
+    }
 }
