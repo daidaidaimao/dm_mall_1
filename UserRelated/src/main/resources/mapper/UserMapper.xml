@@ -33,4 +33,8 @@
     <select id="queryUserId" resultType="string">
         select user_id from u_user where username = #{username}
     </select>
+
+    <select id="partDetail" resultType="pojo.Person">
+        select username,name,avatar_url,gender,email,phone from u_detail where username =#{username}
+    </select>
 </mapper>

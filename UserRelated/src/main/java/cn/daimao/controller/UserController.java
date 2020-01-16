@@ -60,6 +60,11 @@ public class UserController {
         return service.initDetail(username);
     }
 
+    @RequestMapping("partDetail")
+    public SysResult partDetail(String username){
+        return service.partDetail(username);
+    }
+
     @RequestMapping("addDetail")
     public SysResult addDetail(Person person){
         return service.addDetail(person);

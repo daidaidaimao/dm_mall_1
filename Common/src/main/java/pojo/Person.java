@@ -2,6 +2,7 @@ package pojo;
 
 import javafx.scene.input.DataFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -14,6 +15,7 @@ public class Person {
     private String name;
     private String email;
     private String phone;
+    @DateTimeFormat(pattern="yyyy-mm-dd hh:mm:ss")
     private Date createTime;
 
 }

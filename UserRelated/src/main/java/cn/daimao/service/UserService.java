@@ -109,6 +109,7 @@ public class UserService {
 
     public SysResult addDetail(Person person) {
         try {
+            person.setAvatarUrl("");
             mapper.editDetail(person);
             return SysResult.build(200,LoginMessage.AddDetailSuccess,null);
         } catch (Exception e) {
@@ -129,5 +130,10 @@ public class UserService {
 
     public String queryUserId(String username) {
         return mapper.queryUserId(username);
+    }
+
+    public SysResult partDetail(String username) {
+        Person p = mapper.partDetail(username);
+        return SysResult.build(200,"",p);
     }
 }

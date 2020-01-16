@@ -23,4 +23,6 @@ public interface UserMapper {
     String queryUsername(String userId);
 
     String queryUserId(String username);
+
+    Person partDetail(String username);
 }
