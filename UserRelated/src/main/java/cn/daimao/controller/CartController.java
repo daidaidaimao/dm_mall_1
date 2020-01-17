@@ -1,11 +1,23 @@
 package cn.daimao.controller;
 
 import cn.daimao.service.CartService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonArrayFormatVisitor;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import pojo.Cart;
+import pojo.Order;
+import pojo.OrderItem;
 import utils.SysResult;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @package cn.daimao.controller
@@ -39,4 +51,16 @@ public class CartController {
     public SysResult updateNum(Integer productNum,Integer id){
         return service.updateNum(productNum,id);
     }
+
+    @RequestMapping("addOrder")
+    public SysResult addOrder(Order order) throws IOException {
+        return service.addOrder(order);
+    }
+
+    @RequestMapping("queryOrder")
+    public SysResult queryOrder(String userId) throws JsonProcessingException {
+        return service.queryOrder(userId);
+    }
+
+
 }

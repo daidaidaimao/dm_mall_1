@@ -3,6 +3,8 @@ package cn.daimao.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import pojo.Cart;
+import pojo.Order;
+import pojo.OrderItem;
 import pojo.Person;
 
 import java.util.List;
@@ -28,5 +30,11 @@ public interface CartMapper {
 
     void updateNum(@Param("productNum") Integer productNum,@Param("id") Integer id);
 
+    void addOrder(Order order);
 
+    void addOrderItem(OrderItem orderItem);
+
+    List<Order> queryOrder(String userId);
+
+    List<OrderItem> queryOrderItem(String orderId);
 }

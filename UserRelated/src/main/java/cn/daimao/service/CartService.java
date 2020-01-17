@@ -1,12 +1,21 @@
 package cn.daimao.service;
 
 import cn.daimao.mapper.CartMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pojo.Cart;
+import pojo.Order;
+import pojo.OrderItem;
 import utils.SysResult;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Package cn.daimao.service
@@ -62,5 +71,47 @@ public class CartService {
             return SysResult.build(201,e.toString(),null);
         }
 
+    }
+
+    public SysResult addOrder(Order order) throws IOException {
+        String cJson  = order.getClist();
+        order.setOrderId(UUID.randomUUID().toString());
+        List<OrderItem> list = new ArrayList<>();
+        ObjectMapper JSONmapper = new ObjectMapper();
+        JavaType jt = JSONmapper.getTypeFactory().constructParametricType(ArrayList.class,Cart.class);
+        List<Cart> clist = JSONmapper.readValue(cJson,jt);
+        for (Cart c: clist){
+            OrderItem o = new OrderItem();
+            o.setProductPrice(c.getProductPrice());
+            o.setProductNum(c.getProductNum());
+            o.setProductName(c.getProductName());
+            o.setProductImgurl(c.getProductImgurl());
+            o.setProductId(c.getProductId());
+            o.setOrderId(order.getOrderId());
+            list.add(o);
+        }
+        order.setOrderTime(new Date());
+        order.setStatus(0);
+        mapper.addOrder(order);
+        for (OrderItem o : list){
+            mapper.addOrderItem(o);
+        }
+        return SysResult.build(200,"success",null);
+    }
+
+    public SysResult queryOrder(String userId) throws JsonProcessingException {
+        List<Order> olist = mapper.queryOrder(userId);
+        ObjectMapper om = new ObjectMapper();
+        if (olist != null){
+            for (Order o:olist){
+                List<OrderItem> list = mapper.queryOrderItem(o.getOrderId());
+//                System.out.println(list);
+                String pJson = om.writeValueAsString(list);
+//                System.out.println(pJson);
+                o.setItem(list);
+                o.setClist(pJson);
+            }
+        }
+        return SysResult.build(200,"",olist);
     }
 }
