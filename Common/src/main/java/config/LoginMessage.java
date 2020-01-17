@@ -18,5 +18,8 @@ public class LoginMessage {
     public static final Integer LoginTime = 200;
     public static final String AddDetailSuccess = "完善个人信息成功";
     public static final String AddDetailFail = "完善个人信息失败，原因：";
-
+    public static final String PaySuccess = "付款成功,等待商家发货";
+    public static final String PayFail = "付款失败，原因是:";
+    public static final String FahuoSuccess = "发货成功";
+    public static final String FahuoFail = "发货失败 原因是：";
 }

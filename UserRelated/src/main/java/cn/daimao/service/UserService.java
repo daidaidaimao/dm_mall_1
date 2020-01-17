@@ -66,7 +66,7 @@ public class UserService {
 //            redisTemplate.opsForValue().set(userloginlock,ticket,200, TimeUnit.SECONDS);
             try {
                 String userJson = MapperUtils.MP.writeValueAsString(exist);
-                redisTemplate.opsForValue().set(ticket,userJson,200,TimeUnit.SECONDS);
+                redisTemplate.opsForValue().set(ticket,userJson,LoginMessage.LoginTime,TimeUnit.SECONDS);
                 return ticket;
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
@@ -119,8 +119,14 @@ public class UserService {
     }
 
     public SysResult remove(String ticket) {
-        redisTemplate.expire(ticket,0,TimeUnit.SECONDS);
-        return SysResult.build(200,"退出成功",null);
+        try {
+            redisTemplate.expire(ticket,0,TimeUnit.SECONDS);
+            return SysResult.build(200,LoginMessage.LoginOutSuccess,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return SysResult.build(201,LoginMessage.LoginOutFail+e.toString(),null);
+        }
+//        return SysResult.build(200,"退出成功",null);
 
     }
 

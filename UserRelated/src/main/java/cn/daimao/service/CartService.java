@@ -4,11 +4,13 @@ import cn.daimao.mapper.CartMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import config.LoginMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pojo.Cart;
 import pojo.Order;
 import pojo.OrderItem;
+import pojo.Product;
 import utils.SysResult;
 
 import java.io.IOException;
@@ -113,5 +115,49 @@ public class CartService {
             }
         }
         return SysResult.build(200,"",olist);
+    }
+
+    public SysResult pay(String orderId) {
+        try {
+            mapper.pay(orderId);
+            return SysResult.build(200,LoginMessage.PaySuccess,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return SysResult.build(201, LoginMessage.PayFail+e.toString(),null);
+        }
+    }
+
+    public SysResult fahuo(String orderId) {
+        try {
+            mapper.fahuo(orderId);
+            List<OrderItem> plist = new ArrayList<>();
+            plist = mapper.queryOrderItem(orderId);
+            for (OrderItem o :plist){
+                mapper.kucun(o.getProductId(),o.getProductNum());
+            }
+            return SysResult.build(200,LoginMessage.FahuoSuccess,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return SysResult.build(201,LoginMessage.FahuoFail,null);
+        }
+
+    }
+
+    public List<Order> orderManage() {
+        List<Order> orders = mapper.orderManage();
+        for (Order o : orders){
+            List<OrderItem> list = mapper.queryOrderItem(o.getOrderId());
+            o.setItem(list);
+        }
+        return orders;
+    }
+
+    public List<OrderItem> queryItem(String orderId) {
+        return mapper.queryOrderItem(orderId);
+    }
+
+    public Integer queryCartId(String username, String productId) {
+//        String username = mapper.queryUsername(userId);
+        return mapper.queryCartId(productId,username);
     }
 }

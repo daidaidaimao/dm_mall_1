@@ -37,4 +37,17 @@ public interface CartMapper {
     List<Order> queryOrder(String userId);
 
     List<OrderItem> queryOrderItem(String orderId);
+
+    void pay(String orderId);
+
+    void kucun(@Param("productId") String productId,@Param("productNum")Integer productNum);
+
+    void fahuo(String orderId);
+
+    List<Order> orderManage();
+
+    Integer queryCartId(@Param("productId")String prouctId,@Param("username")String username);
+
+    String queryUserId(String username);
+    String queryUsername(String userId);
 }

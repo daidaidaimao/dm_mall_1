@@ -62,5 +62,30 @@ public class CartController {
         return service.queryOrder(userId);
     }
 
+    @RequestMapping("pay")
+    public SysResult pay(String orderId){
+        return service.pay(orderId);
+    }
+
+    @RequestMapping("fahuo")
+    public SysResult fahuo(String orderId){
+        return service.fahuo(orderId);
+    }
+
+    @RequestMapping("orderManage")
+    public List<Order> orderManage(){
+        return service.orderManage();
+    }
+
+    @RequestMapping("queryItem")
+    public List<OrderItem> queryItem(String orderId){
+        return service.queryItem(orderId);
+    }
+
+    @RequestMapping("queryCartId")
+    public Integer queryCartId(String username,String productId){
+        return service.queryCartId(username,productId);
+    }
+
 
 }

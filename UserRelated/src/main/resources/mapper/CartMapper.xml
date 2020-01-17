@@ -41,4 +41,32 @@
     <select id="queryOrderItem" resultType="pojo.OrderItem">
         select * from u_orderitem where order_id = #{orderId}
     </select>
+
+    <update id="pay" >
+        update u_order set status = 1 where order_id = #{orderId}
+    </update>
+
+    <update id="kucun">
+        update t_product set product_num = product_num - #{productNum} where product_id = #{productId}
+    </update>
+
+    <update id="fahuo">
+        update u_order set status = 2 where order_id = #{orderId}
+    </update>
+
+    <select id="orderManage" resultType="pojo.Order">
+        select * from u_order;
+    </select>
+    
+    <select id="queryCartId" resultType="integer">
+        select id from u_cart where product_id=#{productId} and username = #{username}
+    </select>
+
+    <select id="queryUserId" resultType="string">
+        select user_id from u_user where username = #{username}
+    </select>
+
+    <select id="queryUsername" resultType="string">
+        select username from u_user where user_id=#{userId}
+    </select>
 </mapper>
