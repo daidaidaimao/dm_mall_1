@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import pojo.Person;
 import pojo.User;
 
+import java.util.List;
+
 //import javax.xml.soap.Detail;
 
 @Component
@@ -16,7 +18,7 @@ public interface UserMapper {
 
     void addDetail(Person person);
 
-    Person queryDetail(String username);
+    Person queryDetail(String userId);
 
     void editDetail(Person person);
 
@@ -24,5 +26,7 @@ public interface UserMapper {
 
     String queryUserId(String username);
 
-    Person partDetail(String username);
+    Person partDetail(String userId);
+
+    List<User> showUser();
 }

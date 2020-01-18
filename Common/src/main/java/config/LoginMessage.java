@@ -22,4 +22,5 @@ public class LoginMessage {
     public static final String PayFail = "付款失败，原因是:";
     public static final String FahuoSuccess = "发货成功";
     public static final String FahuoFail = "发货失败 原因是：";
+    public static final String UserBeBaned = "您已经被封禁 请联系管理员";
 }

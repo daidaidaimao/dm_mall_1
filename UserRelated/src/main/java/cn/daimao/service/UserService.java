@@ -15,6 +15,7 @@ import utils.SysResult;
 
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -31,9 +32,10 @@ public class UserService {
             exist = mapper.queryByName(user.getUsername());
             if (exist == 0){
                 Person p = new Person();
-                p.setUsername(user.getUsername());
+                p.setUserId(user.getUserId());
 //                Date data = new Date();
                 p.setCreateTime(new Date());
+                user.setStatus(1);
                 mapper.addDetail(p);
                 mapper.addUser(user);
                 return SysResult.build(200,LoginMessage.RegisterSuccess,null);
@@ -49,6 +51,9 @@ public class UserService {
     public String login(User user) {
         User exist = mapper.queryExist(user);
         Integer u =mapper.queryByName(user.getUsername());
+        if( exist !=null && exist.getStatus() ==0){
+            return LoginMessage.UserBeBaned;
+        }
         if (exist == null ){
             if (u ==0){
                 return LoginMessage.UserNotExist;
@@ -57,7 +62,8 @@ public class UserService {
             }
         }else{
 //            String userloginlock = "user_login_lock_"+exist.getUserId();
-            String ticket ="TICKET"+UUID.randomUUID().toString()+exist.getUsername();
+//            String ticket ="TICKET"+UUID.randomUUID().toString()+exist.getUsername();
+            String ticket = exist.getUserId();
 //            if (redisTemplate.hasKey(userloginlock)){
 //                String oldticket = redisTemplate.opsForValue().get(userloginlock);
 //                redisTemplate.delete(oldticket);
@@ -97,9 +103,10 @@ public class UserService {
         }
     }
 
-    public SysResult initDetail(String username) {
+    public SysResult initDetail(String userId) {
         try {
-            Person person = mapper.queryDetail(username);
+
+            Person person = mapper.queryDetail(userId);
             return SysResult.build(200,LoginMessage.DetailSuccess,person);
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,12 +141,23 @@ public class UserService {
         return mapper.queryUsername(userId);
     }
 
-    public String queryUserId(String username) {
-        return mapper.queryUserId(username);
+    public String queryUserId(String userId) {
+        return mapper.queryUserId(userId);
     }
 
-    public SysResult partDetail(String username) {
-        Person p = mapper.partDetail(username);
+    public SysResult partDetail(String userId) {
+//        String userId = mapper.queryUsername(username);
+        Person p = mapper.partDetail(userId);
         return SysResult.build(200,"",p);
+    }
+
+    public SysResult showUser() {
+        try {
+            List<User> list = mapper.showUser();
+            return SysResult.build(200,"",list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return SysResult.build(201,e.toString(),"");
+        }
     }
 }

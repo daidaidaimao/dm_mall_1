@@ -33,10 +33,10 @@ public class UserController {
     @RequestMapping("login")
     public SysResult login(User user, HttpServletRequest request, HttpServletResponse response){
         String ticket = service.login(user);
-        if ("".equals(ticket)||ticket.equals(LoginMessage.UserNotExist)||LoginMessage.PassworddError.equals(ticket)){
+        if ("".equals(ticket)||ticket.equals(LoginMessage.UserNotExist)||LoginMessage.PassworddError.equals(ticket)||LoginMessage.UserBeBaned.equals(ticket)){
             return SysResult.build(201,ticket,null);
         }else{
-            CookieUtils.setCookie(request,response,"TICKET",ticket);
+            CookieUtils.setCookie(request,response,"TICKET",ticket,LoginMessage.LoginTime);
             return SysResult.build(200, LoginMessage.LoginSuccess,null);
         }
     }
@@ -51,18 +51,19 @@ public class UserController {
             CookieUtils.deleteCookie(request,response,"TICKET");
             return SysResult.build(201, LoginMessage.TimeOut,null);
         }else{
+//            CookieUtils.setCookie(request,response,"TICKET",ticket,LoginMessage.LoginTime);
             return SysResult.build(200,LoginMessage.NotTimeOut,userJson);
         }
     }
 
     @RequestMapping("detail")
-    public SysResult initDetail(String username){
-        return service.initDetail(username);
+    public SysResult initDetail(String userId){
+        return service.initDetail(userId);
     }
 
     @RequestMapping("partDetail")
-    public SysResult partDetail(String username){
-        return service.partDetail(username);
+    public SysResult partDetail(String userId){
+        return service.partDetail(userId);
     }
 
     @RequestMapping("addDetail")
@@ -77,5 +78,9 @@ public class UserController {
     @RequestMapping("queryUsername")
     public String queryUsername(String userId){
         return service.queryUsername(userId);
+    }
+    @RequestMapping("showUser")
+    public SysResult showUser(){
+        return service.showUser();
     }
 }
