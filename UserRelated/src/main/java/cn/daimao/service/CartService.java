@@ -98,7 +98,7 @@ public class CartService {
         for (OrderItem o : list){
             mapper.addOrderItem(o);
         }
-        return SysResult.build(200,"success",null);
+        return SysResult.build(200,"success",order);
     }
 
     public SysResult queryOrder(String userId) throws JsonProcessingException {
@@ -159,5 +159,9 @@ public class CartService {
     public Integer queryCartId(String username, String productId) {
 //        String username = mapper.queryUsername(userId);
         return mapper.queryCartId(productId,username);
+    }
+
+    public String queryByOrderId(String orderId) {
+        return mapper.queryByOrderId(orderId);
     }
 }

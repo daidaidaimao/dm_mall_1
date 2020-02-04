@@ -50,4 +50,6 @@ public interface CartMapper {
 
     String queryUserId(String username);
     String queryUsername(String userId);
+
+    String queryByOrderId(String orderId);
 }

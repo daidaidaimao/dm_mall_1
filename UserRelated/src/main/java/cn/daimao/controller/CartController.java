@@ -87,5 +87,11 @@ public class CartController {
         return service.queryCartId(username,productId);
     }
 
+    @RequestMapping("queryByOrderId")
+    public String queryByOrderId(String orderId){
+        return service.queryByOrderId(orderId);
+    }
+
+
 
 }
