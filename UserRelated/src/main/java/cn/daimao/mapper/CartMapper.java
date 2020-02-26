@@ -52,4 +52,7 @@ public interface CartMapper {
     String queryUsername(String userId);
 
     String queryByOrderId(String orderId);
+
+    Integer countOrderNum();
+    List<Order> queryByPage(@Param("start") Integer start,@Param("num") Integer num);
 }

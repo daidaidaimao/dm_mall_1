@@ -13,6 +13,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import pojo.Cart;
 import pojo.Order;
 import pojo.OrderItem;
+import utils.PageResult;
 import utils.SysResult;
 
 import java.io.IOException;
@@ -90,6 +91,11 @@ public class CartController {
     @RequestMapping("queryByOrderId")
     public String queryByOrderId(String orderId){
         return service.queryByOrderId(orderId);
+    }
+
+    @RequestMapping("/queryAllOrder")
+    public PageResult queryAllOrder(Integer page,Integer num){
+        return service.queryAllOrder(page,num);
     }
 
 

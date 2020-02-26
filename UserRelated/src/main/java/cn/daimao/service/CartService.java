@@ -11,6 +11,7 @@ import pojo.Cart;
 import pojo.Order;
 import pojo.OrderItem;
 import pojo.Product;
+import utils.PageResult;
 import utils.SysResult;
 
 import java.io.IOException;
@@ -163,5 +164,15 @@ public class CartService {
 
     public String queryByOrderId(String orderId) {
         return mapper.queryByOrderId(orderId);
+    }
+
+    public PageResult queryAllOrder(Integer page,Integer num) {
+        PageResult result = new PageResult();
+        Integer total = mapper.countOrderNum();
+        result.setTotal(total);
+        Integer start = (page-1)*num;
+        List<Order> list = mapper.queryByPage(start,num);
+        result.setRows(list);
+        return result;
     }
 }

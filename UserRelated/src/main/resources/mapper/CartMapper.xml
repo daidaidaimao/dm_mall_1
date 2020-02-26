@@ -73,4 +73,12 @@
     <select id="queryByOrderId" resultType="string">
         select user_id from u_order where order_id = #{orderId}
     </select>
+
+    <select id="countOrderNum" resultType="int">
+        select count(order_id) from u_order
+    </select>
+
+    <select id="queryByPage" resultType="pojo.Order">
+        select * from u_order limit #{start},#{num}
+    </select>
 </mapper>

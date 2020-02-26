@@ -2,9 +2,11 @@ package cn.daimao.controller;
 
 import cn.daimao.service.ProductService;
 import config.ProductMessage;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import pojo.Approval;
@@ -21,12 +23,14 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
-    @RequestMapping("/getdata")
+    @RequestMapping(value = "/getdata",method = RequestMethod.GET)
+    @ApiOperation("select * from product 不多描述")
     public List<Product> queryAll(){
         return service.queryAll();
     }
 
-    @RequestMapping("/add")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ApiOperation("添加商品")
     public SysResult add(Product product){
         try {
             service.add(product);
@@ -37,7 +41,8 @@ public class ProductController {
         }
     }
 
-    @RequestMapping("/picupload")
+    @RequestMapping(value = "/picupload",method = RequestMethod.POST)
+    @ApiOperation("这是个用语图片上传的API，本地地址和网络地址可在application.properties中修改")
     public String upload(MultipartFile pic){
 //        System.out.println(pic.getOriginalFilename());
         if(!pic.isEmpty()) {
@@ -45,7 +50,8 @@ public class ProductController {
         }else
             return ProductMessage.UploadError;
     }
-    @RequestMapping("/delete")
+    @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
+    @ApiOperation("言简意赅，删除")
     public SysResult delete(String productId){
         try {
             service.delete(productId);
@@ -55,7 +61,8 @@ public class ProductController {
             return SysResult.build(201,ProductMessage.DeleteFail+e.toString(),null);
         }
     }
-    @RequestMapping("/update")
+    @RequestMapping(value = "/update",method = RequestMethod.PUT)
+    @ApiOperation("商品编辑更新")
     public SysResult update(Product p){
         try {
             service.update(p);
@@ -65,17 +72,20 @@ public class ProductController {
             return SysResult.build(201,ProductMessage.EditFail+e.toString(),null);
         }
     }
-    @RequestMapping("/queryOne")
+    @RequestMapping(value = "/queryOne",method = RequestMethod.GET)
+    @ApiOperation("查询单个商品详细信息")
     public Product queryOne(String productId){
         return service.queryOne(productId);
     }
     
-    @RequestMapping("/page")
+    @RequestMapping(value = "/page",method = RequestMethod.GET)
+    @ApiOperation("这是显示商品所属分类的全部信息的复杂分页，写了我好一会")
     public PageResult fenye(Integer page, Integer num){
         return service.fenye(page,num);
     }
 
-    @RequestMapping("/pageFront")
+    @RequestMapping(value = "/pageFront",method = RequestMethod.GET)
+    @ApiOperation("一个简单的全部商品展示分页")
     public PageResult front(Integer page,Integer num){
         return service.front(page,num);
     }
@@ -90,7 +100,8 @@ public class ProductController {
 //        return SysResult.build(200,"nimade",o);
 //    }
 
-    @RequestMapping("/editStatus")
+    @RequestMapping(value = "/editStatus",method = RequestMethod.POST)
+    @ApiOperation("商品上架下架状态修改")
     public SysResult changgeStatus(Product product){
         return service.changeStatus(product);
     }

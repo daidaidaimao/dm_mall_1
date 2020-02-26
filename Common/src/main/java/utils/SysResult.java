@@ -1,8 +1,10 @@
 package utils;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 @Data
+@ApiModel("一般结果类")
 public class SysResult {
     private Integer status;
     private String message;
