@@ -5,7 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import config.LoginMessage;
+import config.SystemSetting;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pojo.Cart;
 import pojo.Order;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Package cn.daimao.service
@@ -31,6 +34,9 @@ import java.util.UUID;
 public class CartService {
     @Autowired
     private CartMapper mapper;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     public SysResult addCart(Cart cart) {
         int exist = mapper.queryExist(cart.getProductId(),cart.getUsername());
@@ -99,7 +105,18 @@ public class CartService {
         for (OrderItem o : list){
             mapper.addOrderItem(o);
         }
+        redisTemplate.opsForValue().set(order.getOrderId(),"未付款", SystemSetting.ORDERTIME, TimeUnit.SECONDS);
         return SysResult.build(200,"success",order);
+    }
+    public SysResult queryTime(String orderId){
+        Long time = redisTemplate.getExpire(orderId, TimeUnit.SECONDS);
+        if(time != 0)
+            return SysResult.build(200,time.toString(),null);
+        else{
+            mapper.cancelOrder(orderId);
+            return SysResult.build(201,SystemSetting.ORDERCANCEL,null);
+        }
+
     }
 
     public SysResult queryOrder(String userId) throws JsonProcessingException {
@@ -174,5 +191,20 @@ public class CartService {
         List<Order> list = mapper.queryByPage(start,num);
         result.setRows(list);
         return result;
+    }
+
+    public PageResult pageOrder(Integer page, Integer num, String userId) {
+        Integer total = mapper.countUserTotal(userId);
+        PageResult result  = new PageResult();
+        Integer start = num*(page-1);
+        List<Order> list = mapper.pageOrder(start,num,userId);
+        result.setRows(list);
+        result.setTotal(total);
+        return result;
+    }
+
+    public SysResult cancelOrder(String orderId) {
+        mapper.cancelOrder(orderId);
+        return SysResult.build(200,"",null);
     }
 }

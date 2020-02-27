@@ -55,4 +55,11 @@ public interface CartMapper {
 
     Integer countOrderNum();
     List<Order> queryByPage(@Param("start") Integer start,@Param("num") Integer num);
+
+    Integer countUserTotal(String userId);
+    List<Order> pageOrder(@Param("start") Integer start,@Param("num")Integer num,@Param("userId")String userId);
+
+    void deleteOrder(String orderId);
+
+    void cancelOrder(String orderId);
 }

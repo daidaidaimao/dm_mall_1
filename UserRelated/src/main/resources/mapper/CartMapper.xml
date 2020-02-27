@@ -79,6 +79,22 @@
     </select>
 
     <select id="queryByPage" resultType="pojo.Order">
-        select * from u_order limit #{start},#{num}
+        select * from u_order order by order_time desc limit #{start},#{num}
     </select>
+
+    <select id="countUserTotal" resultType="int">
+        select count(order_id) from u_order where user_id=#{userId}
+    </select>
+
+    <select id="pageOrder" resultType="pojo.Order">
+        select * from u_order where user_id=#{userId} order by order_time desc  limit #{start},#{num}
+    </select>
+
+    <delete id="deleteOrder" >
+        delete from u_order where order_id = #{orderId}
+    </delete>
+
+    <update id="cancelOrder">
+        update u_order set status = -1 where order_id = #{orderId}
+    </update>
 </mapper>
