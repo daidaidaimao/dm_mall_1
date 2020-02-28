@@ -96,4 +96,10 @@ public class UserController {
     public SysResult showUser(){
         return service.showUser();
     }
+
+    @RequestMapping(value = "/OnlineUser",method = RequestMethod.GET)
+    @ApiOperation("判断用户是否在线")
+    public SysResult OnlineUser(String userId){
+        return service.OnlineUser(userId);
+    }
 }

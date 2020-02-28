@@ -87,9 +87,9 @@ public class UserService {
         if (lefttime!=null&&userJson!=null){
         try {
 //            User user =MapperUtils.MP.readValue(userJson,User.class);
-            Long leasetime = (long) 60;
+            Long leasetime = (long) 200;
             if (lefttime<=leasetime){
-                lefttime = lefttime + 60*3L;
+                lefttime = lefttime + 200*3L;
                 redisTemplate.expire(ticket,lefttime,TimeUnit.SECONDS);
 //                redisTemplate.expire("user_login_lock_"+user.getUserId(),lefttime,TimeUnit.SECONDS);
             }
@@ -159,5 +159,16 @@ public class UserService {
             e.printStackTrace();
             return SysResult.build(201,e.toString(),"");
         }
+    }
+
+    public SysResult OnlineUser(String userId) {
+        String s = redisTemplate.opsForValue().get(userId);
+        Long expire = redisTemplate.getExpire(userId, TimeUnit.SECONDS);
+        if ( expire ==0 || s ==null){
+            return SysResult.build(201,"离线",null);
+        }else{
+            return SysResult.build(200,"在线",null);
+        }
+
     }
 }
