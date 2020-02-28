@@ -83,30 +83,36 @@ public class CartService {
     }
 
     public SysResult addOrder(Order order) throws IOException {
-        String cJson  = order.getClist();
-        order.setOrderId(UUID.randomUUID().toString());
-        List<OrderItem> list = new ArrayList<>();
-        ObjectMapper JSONmapper = new ObjectMapper();
-        JavaType jt = JSONmapper.getTypeFactory().constructParametricType(ArrayList.class,Cart.class);
-        List<Cart> clist = JSONmapper.readValue(cJson,jt);
-        for (Cart c: clist){
-            OrderItem o = new OrderItem();
-            o.setProductPrice(c.getProductPrice());
-            o.setProductNum(c.getProductNum());
-            o.setProductName(c.getProductName());
-            o.setProductImgurl(c.getProductImgurl());
-            o.setProductId(c.getProductId());
-            o.setOrderId(order.getOrderId());
-            list.add(o);
+        Integer num = mapper.countUnpaidNum(order.getUserId());
+        if(num == 0) {
+            String cJson = order.getClist();
+            order.setOrderId(UUID.randomUUID().toString());
+            List<OrderItem> list = new ArrayList<>();
+            ObjectMapper JSONmapper = new ObjectMapper();
+            JavaType jt = JSONmapper.getTypeFactory().constructParametricType(ArrayList.class, Cart.class);
+            List<Cart> clist = JSONmapper.readValue(cJson, jt);
+            for (Cart c : clist) {
+                OrderItem o = new OrderItem();
+                o.setProductPrice(c.getProductPrice());
+                o.setProductNum(c.getProductNum());
+                o.setProductName(c.getProductName());
+                o.setProductImgurl(c.getProductImgurl());
+                o.setProductId(c.getProductId());
+                o.setOrderId(order.getOrderId());
+                list.add(o);
+            }
+            order.setOrderTime(new Date());
+            order.setStatus(0);
+            mapper.addOrder(order);
+            for (OrderItem o : list) {
+                mapper.addOrderItem(o);
+            }
+            redisTemplate.opsForValue().set(order.getOrderId(), "未付款", SystemSetting.ORDERTIME, TimeUnit.SECONDS);
+            return SysResult.build(200, SystemSetting.CREATEORDER, order);
+        }else{
+            return SysResult.build(201,SystemSetting.ORDERUNPAID,null);
         }
-        order.setOrderTime(new Date());
-        order.setStatus(0);
-        mapper.addOrder(order);
-        for (OrderItem o : list){
-            mapper.addOrderItem(o);
-        }
-        redisTemplate.opsForValue().set(order.getOrderId(),"未付款", SystemSetting.ORDERTIME, TimeUnit.SECONDS);
-        return SysResult.build(200,"success",order);
+
     }
     public SysResult queryTime(String orderId){
         Long time = redisTemplate.getExpire(orderId, TimeUnit.SECONDS);
@@ -183,22 +189,47 @@ public class CartService {
         return mapper.queryByOrderId(orderId);
     }
 
-    public PageResult queryAllOrder(Integer page,Integer num) {
+    public PageResult queryAllOrder(Integer page,Integer num) throws JsonProcessingException {
+
         PageResult result = new PageResult();
         Integer total = mapper.countOrderNum();
         result.setTotal(total);
         Integer start = (page-1)*num;
-        List<Order> list = mapper.queryByPage(start,num);
-        result.setRows(list);
+        List<Order> olist = mapper.queryByPage(start,num);
+        ObjectMapper om = new ObjectMapper();
+        if (olist != null){
+            for (Order o:olist){
+                List<OrderItem> list = mapper.queryOrderItem(o.getOrderId());
+//                System.out.println(list);
+                String pJson = om.writeValueAsString(list);
+//                System.out.println(pJson);
+                o.setItem(list);
+                o.setClist(pJson);
+            }
+        }
+        result.setRows(olist);
         return result;
     }
 
-    public PageResult pageOrder(Integer page, Integer num, String userId) {
+    public PageResult pageOrder(Integer page, Integer num, String userId) throws JsonProcessingException {
         Integer total = mapper.countUserTotal(userId);
         PageResult result  = new PageResult();
         Integer start = num*(page-1);
-        List<Order> list = mapper.pageOrder(start,num,userId);
-        result.setRows(list);
+//        List<Order> list = mapper.pageOrder(start,num,userId);
+        List<Order> olist = mapper.pageOrder(start,num,userId);
+        ObjectMapper om = new ObjectMapper();
+        if (olist != null){
+            for (Order o:olist){
+                List<OrderItem> list = mapper.queryOrderItem(o.getOrderId());
+//                System.out.println(list);
+                String pJson = om.writeValueAsString(list);
+//                System.out.println(pJson);
+                o.setItem(list);
+                o.setClist(pJson);
+            }
+        }
+        result.setRows(olist);
+//        result.setRows(list);
         result.setTotal(total);
         return result;
     }

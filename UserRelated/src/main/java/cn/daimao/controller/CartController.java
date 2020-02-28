@@ -109,13 +109,13 @@ public class CartController {
 
     @RequestMapping(value = "/queryAllOrder",method = RequestMethod.GET)
     @ApiOperation("后台分页显示订单")
-    public PageResult queryAllOrder(Integer page,Integer num){
+    public PageResult queryAllOrder(Integer page,Integer num) throws JsonProcessingException {
         return service.queryAllOrder(page,num);
     }
 
     @RequestMapping(value = "/pageOrder",method = RequestMethod.GET)
     @ApiOperation("前台分页显示订单")
-    public PageResult pageOrder(Integer page,Integer num,String userId){
+    public PageResult pageOrder(Integer page,Integer num,String userId) throws JsonProcessingException {
         return service.pageOrder(page,num,userId);
     }
 
@@ -133,5 +133,7 @@ public class CartController {
     public SysResult queryOrderTime(String orderId){
         return service.queryTime(orderId);
     }
+
+
 
 }

@@ -62,4 +62,6 @@ public interface CartMapper {
     void deleteOrder(String orderId);
 
     void cancelOrder(String orderId);
+
+    Integer countUnpaidNum(String userId);
 }

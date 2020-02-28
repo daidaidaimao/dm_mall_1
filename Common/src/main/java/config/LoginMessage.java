@@ -15,7 +15,7 @@ public class LoginMessage {
     public static final String NotTimeOut = "尚未超时,续租成功";
     public static final String DetailSuccess = "查看用户个人中心成功";
     public static final String DetailFail = "查看用户个人中心失败，原因;";
-    public static final Integer LoginTime = 200;
+    public static final Integer LoginTime = 500;
     public static final String AddDetailSuccess = "完善个人信息成功";
     public static final String AddDetailFail = "完善个人信息失败，原因：";
     public static final String PaySuccess = "付款成功,等待商家发货";
