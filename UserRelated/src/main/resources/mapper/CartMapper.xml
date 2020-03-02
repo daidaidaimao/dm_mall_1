@@ -71,7 +71,6 @@
     </select>
 
     <select id="queryByOrderId" resultType="pojo.Order">
-#         select user_id from u_order where order_id = #{orderId}
         select * from u_order where order_id = #{orderId}
     </select>
 
@@ -104,6 +103,6 @@
     </select>
 
     <update id="changOrderStatus">
-        update u_order set status =#{status} where order_id = #{orderId}
+        update u_order set status = #{status} where order_id = #{orderId}
     </update>
 </mapper>
