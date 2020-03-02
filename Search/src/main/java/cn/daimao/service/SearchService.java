@@ -20,6 +20,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pojo.Product;
 import pojo.Student;
 import utils.MapperUtils;
 import java.io.IOException;
@@ -35,17 +36,17 @@ public class SearchService {
 
     public void createIndex() {
         IndicesAdminClient client = transportClient.admin().indices();
-        IndicesExistsRequestBuilder request = client.prepareExists("student3");
+        IndicesExistsRequestBuilder request = client.prepareExists("product");
         IndicesExistsResponse response = request.get();
         if(!response.isExists()){
             //说明不存在
-            client.prepareCreate("student3").get();
+            client.prepareCreate("product").get();
             XContentBuilder mapping = null;
             try {
                 mapping = XContentFactory.jsonBuilder()
-                        .startObject("student")
+                        .startObject("product")
                         .startObject("properties")
-                        .startObject("other").field("type","text").field("analyzer","ik_max_word").endObject()
+                        .startObject("productName").field("type","text").field("analyzer","ik_max_word").endObject()
                         .endObject()
                         .endObject();
                 PutMappingRequest mappingRequest = Requests.putMappingRequest("student3").type("student").source(mapping);
@@ -56,11 +57,11 @@ public class SearchService {
 
 
         }
-        List<Student> pList = mapper.queryAll();
-        for (Student s : pList){
+        List<Product> pList = mapper.queryAll();
+        for (Product s : pList){
             try {
                 String pJson = MapperUtils.MP.writeValueAsString(s);
-                IndexRequestBuilder requestBuilder = transportClient.prepareIndex("student3", "student", s.getId());
+                IndexRequestBuilder requestBuilder = transportClient.prepareIndex("product", "product", s.getProductId());
                 requestBuilder.setSource(pJson).get();
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
@@ -68,10 +69,10 @@ public class SearchService {
         }
     }
 
-    public List<Student> query(String query) {
-        List<Student> slist =new ArrayList<>();
+    public List<Product> query(String query) {
+        List<Product> slist =new ArrayList<>();
         MatchQueryBuilder query1= QueryBuilders.matchQuery("other",query);
-        SearchRequestBuilder request = transportClient.prepareSearch("student3").setQuery(query1);
+        SearchRequestBuilder request = transportClient.prepareSearch("product").setQuery(query1);
         SearchResponse response = request.get();
         SearchHits topHit = response.getHits();
         SearchHit[] hits = topHit.getHits();
@@ -79,8 +80,8 @@ public class SearchService {
         for (SearchHit hit:hits){
             try {
                 String pJson=hit.getSourceAsString();
-                Student student =MapperUtils.MP.readValue(pJson,Student.class);
-                slist.add(student);
+                Product product =MapperUtils.MP.readValue(pJson,Product.class);
+                slist.add(product);
             } catch (IOException e) {
                 e.printStackTrace();
             }

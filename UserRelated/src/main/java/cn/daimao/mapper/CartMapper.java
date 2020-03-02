@@ -51,7 +51,9 @@ public interface CartMapper {
     String queryUserId(String username);
     String queryUsername(String userId);
 
-    String queryByOrderId(String orderId);
+    Order queryByOrderId(String orderId);
+//    String queryByOrderId(String orderId);
+
 
     Integer countOrderNum();
     List<Order> queryByPage(@Param("start") Integer start,@Param("num") Integer num);
@@ -64,4 +66,6 @@ public interface CartMapper {
     void cancelOrder(String orderId);
 
     Integer countUnpaidNum(String userId);
+
+    void changOrderStatus(@Param("orderId") String orderId,@Param("status") Integer status);
 }

@@ -134,6 +134,12 @@ public class CartController {
         return service.queryTime(orderId);
     }
 
+    @RequestMapping(value = "/confirmReceipt",method = RequestMethod.GET)
+    @ApiOperation("用于确认收货API")
+    public SysResult confirmReceipt(String orderId){
+        return service.confirmReceipt(orderId);
+    }
+
 
 
 }

@@ -56,7 +56,7 @@ public class CartService {
             return SysResult.build(200,"",carts);
         } catch (Exception e) {
             e.printStackTrace();
-            return SysResult.build(201,e.toString(),null);
+            return SysResult.build(202,e.toString(),null);
         }
     }
 
@@ -66,7 +66,7 @@ public class CartService {
             return SysResult.build(200,"",null);
         } catch (Exception e) {
             e.printStackTrace();
-            return SysResult.build(201,e.toString(),null);
+            return SysResult.build(202,e.toString(),null);
         }
     }
 
@@ -77,7 +77,7 @@ public class CartService {
             return SysResult.ok();
         } catch (Exception e) {
             e.printStackTrace();
-            return SysResult.build(201,e.toString(),null);
+            return SysResult.build(202,e.toString(),null);
         }
 
     }
@@ -143,27 +143,40 @@ public class CartService {
 
     public SysResult pay(String orderId) {
         try {
-            mapper.pay(orderId);
+//            mapper.pay(orderId);
+            Order order = mapper.queryByOrderId(orderId);
+            if (order.getStatus() ==0){
+            mapper.changOrderStatus(orderId,1);
             return SysResult.build(200,LoginMessage.PaySuccess,null);
+            }else{
+                return SysResult.build(201,SystemSetting.ORDERERROR,null);
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return SysResult.build(201, LoginMessage.PayFail+e.toString(),null);
+            return SysResult.build(202, LoginMessage.PayFail+e.toString(),null);
         }
     }
 
     public SysResult fahuo(String orderId) {
         try {
-            mapper.fahuo(orderId);
-            List<OrderItem> plist = new ArrayList<>();
-            plist = mapper.queryOrderItem(orderId);
-            for (OrderItem o :plist){
-                mapper.kucun(o.getProductId(),o.getProductNum());
+//            mapper.fahuo(orderId);
+            Order order = mapper.queryByOrderId(orderId);
+            if (order.getStatus() == 1) {
+                mapper.changOrderStatus(orderId, 2);
+                List<OrderItem> plist = new ArrayList<>();
+                plist = mapper.queryOrderItem(orderId);
+                for (OrderItem o : plist) {
+                    mapper.kucun(o.getProductId(), o.getProductNum());
+                }
+                return SysResult.build(200, LoginMessage.FahuoSuccess, null);
+            }else{
+                return SysResult.build(201,SystemSetting.ORDERERROR,null);
             }
-            return SysResult.build(200,LoginMessage.FahuoSuccess,null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return SysResult.build(201,LoginMessage.FahuoFail,null);
-        }
+            } catch(Exception e){
+                e.printStackTrace();
+                return SysResult.build(202, LoginMessage.FahuoFail, null);
+            }
+
 
     }
 
@@ -186,7 +199,9 @@ public class CartService {
     }
 
     public String queryByOrderId(String orderId) {
-        return mapper.queryByOrderId(orderId);
+        Order order = mapper.queryByOrderId(orderId);
+//        return mapper.queryByOrderId(orderId);
+        return order.getUserId();
     }
 
     public PageResult queryAllOrder(Integer page,Integer num) throws JsonProcessingException {
@@ -235,7 +250,18 @@ public class CartService {
     }
 
     public SysResult cancelOrder(String orderId) {
-        mapper.cancelOrder(orderId);
+//        mapper.cancelOrder(orderId);
+        mapper.changOrderStatus(orderId,-1);
         return SysResult.build(200,"",null);
+    }
+
+    public SysResult confirmReceipt(String orderId) {
+        Order order = mapper.queryByOrderId(orderId);
+        if (order.getStatus() == 2){
+            mapper.changOrderStatus(orderId,3);
+            return SysResult.build(200,SystemSetting.ORDERCHECK,null);
+        }else{
+            return SysResult.build(201,SystemSetting.ORDERCANCEL,null);
+        }
     }
 }
