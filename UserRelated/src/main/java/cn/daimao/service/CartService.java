@@ -261,7 +261,7 @@ public class CartService {
             mapper.changOrderStatus(orderId,3);
             return SysResult.build(200,SystemSetting.ORDERCHECK,null);
         }else{
-            return SysResult.build(201,SystemSetting.ORDERCANCEL,null);
+            return SysResult.build(201,SystemSetting.ORDERERROR,null);
         }
     }
 }
