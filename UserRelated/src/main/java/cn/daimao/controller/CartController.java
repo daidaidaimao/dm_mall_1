@@ -102,7 +102,7 @@ public class CartController {
     }
 
     @RequestMapping(value = "queryByOrderId",method = RequestMethod.GET)
-    @ApiOperation("查询订单详情，用于 以后可能会模拟的一个物流信息  什么的 。。。")
+    @ApiOperation("用订单ID查询用户ID 。。。")
     public String queryByOrderId(String orderId){
         return service.queryByOrderId(orderId);
     }
@@ -138,6 +138,12 @@ public class CartController {
     @ApiOperation("用于确认收货API")
     public SysResult confirmReceipt(String orderId){
         return service.confirmReceipt(orderId);
+    }
+
+    @RequestMapping(value = "/queryOrderDetail",method = RequestMethod.GET)
+    @ApiOperation("利用orderID查订单的全部信息")
+    public Order queryOrderDetail(String orderId){
+        return service.queryOrderDetail(orderId);
     }
 
 

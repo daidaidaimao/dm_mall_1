@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pojo.Person;
+import pojo.ProductComment;
 import pojo.User;
 import utils.CookieUtils;
 import utils.SysResult;
@@ -101,5 +102,11 @@ public class UserController {
     @ApiOperation("判断用户是否在线")
     public SysResult OnlineUser(String userId){
         return service.OnlineUser(userId);
+    }
+
+    @RequestMapping(value = "/addComment", method = RequestMethod.POST)
+    @ApiOperation("用户评论商品功能")
+    public SysResult addComment(ProductComment comment){
+        return service.addComment(comment);
     }
 }

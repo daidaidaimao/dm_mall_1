@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import org.springframework.stereotype.Service;
 import pojo.Person;
+import pojo.ProductComment;
 import pojo.User;
 import utils.MapperUtils;
 import utils.SysResult;
@@ -168,6 +169,19 @@ public class UserService {
             return SysResult.build(201,"离线",null);
         }else{
             return SysResult.build(200,"在线",null);
+        }
+
+    }
+
+    public SysResult addComment(ProductComment comment) {
+        comment.setCreateTime(new Date());
+        comment.setCommentId(UUID.randomUUID().toString());
+        try {
+            mapper.addComment(comment);
+            return SysResult.build(200,"success",null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return SysResult.build(201,"fail"+e.toString(),null);
         }
 
     }

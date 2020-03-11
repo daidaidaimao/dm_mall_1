@@ -2,6 +2,7 @@ package cn.daimao.mapper;
 
 import org.springframework.stereotype.Component;
 import pojo.Person;
+import pojo.ProductComment;
 import pojo.User;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface UserMapper {
     Person partDetail(String userId);
 
     List<User> showUser();
+
+    void addComment(ProductComment comment);
 }

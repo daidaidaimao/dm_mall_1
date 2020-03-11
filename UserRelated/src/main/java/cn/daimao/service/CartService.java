@@ -264,4 +264,8 @@ public class CartService {
             return SysResult.build(201,SystemSetting.ORDERERROR,null);
         }
     }
+
+    public Order queryOrderDetail(String orderId) {
+        return mapper.queryByOrderId(orderId);
+    }
 }
