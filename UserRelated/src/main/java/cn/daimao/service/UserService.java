@@ -176,6 +176,8 @@ public class UserService {
     public SysResult addComment(ProductComment comment) {
         comment.setCreateTime(new Date());
         comment.setCommentId(UUID.randomUUID().toString());
+        Person person = mapper.queryDetail(comment.getUserId());
+        comment.setUserName(person.getName());
         try {
             mapper.addComment(comment);
             return SysResult.build(200,"success",null);
@@ -184,5 +186,9 @@ public class UserService {
             return SysResult.build(201,"fail"+e.toString(),null);
         }
 
+    }
+
+    public List<ProductComment> showCommentProduct(String productId) {
+        return mapper.showCommentProduct(productId);
     }
 }

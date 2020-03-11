@@ -41,4 +41,14 @@
     <select id="showUser" resultType="pojo.User">
         select * from u_user;
     </select>
+
+    <insert id="addComment" >
+        insert into t_comment values (
+                                      #{commentId},#{productId},#{userId},#{commentContent},#{createTime},#{userName}
+                                      )
+    </insert>
+
+    <select id="showCommentProduct" resultType="pojo.ProductComment">
+        select * from t_comment where product_id =#{productId}
+    </select>
 </mapper>

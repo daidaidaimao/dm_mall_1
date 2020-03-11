@@ -32,4 +32,6 @@ public interface UserMapper {
     List<User> showUser();
 
     void addComment(ProductComment comment);
+
+    List<ProductComment> showCommentProduct(String productId);
 }

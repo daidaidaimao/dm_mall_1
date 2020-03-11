@@ -16,6 +16,7 @@ import utils.SysResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -108,5 +109,11 @@ public class UserController {
     @ApiOperation("用户评论商品功能")
     public SysResult addComment(ProductComment comment){
         return service.addComment(comment);
+    }
+
+    @RequestMapping(value = "/showCommentProduct",method = RequestMethod.GET)
+    @ApiOperation("前台商品显示所有评价")
+    public List<ProductComment> showCommentProduct(String productId){
+        return service.showCommentProduct(productId);
     }
 }
