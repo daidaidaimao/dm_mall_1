@@ -15,4 +15,5 @@ public class ProductComment {
     private Date createTime;
     private String userName;
     private String orderId;
+    private Integer score;
 }
