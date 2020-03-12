@@ -116,4 +116,10 @@ public class UserController {
     public List<ProductComment> showCommentProduct(String productId){
         return service.showCommentProduct(productId);
     }
+
+    @RequestMapping(value = "/whetherComment",method = RequestMethod.GET)
+    @ApiOperation("判断用户是否已经评论过该订单")
+    public SysResult whetherComment(String userId,String orderId){
+        return service.whetherComment(userId,orderId);
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import org.springframework.stereotype.Service;
+import pojo.OrderItem;
 import pojo.Person;
 import pojo.ProductComment;
 import pojo.User;
@@ -190,5 +191,21 @@ public class UserService {
 
     public List<ProductComment> showCommentProduct(String productId) {
         return mapper.showCommentProduct(productId);
+    }
+
+    public SysResult whetherComment(String userId, String orderId) {
+        Integer num = mapper.countComment(userId,orderId);
+        List<OrderItem> list = mapper.queryOrderItem(orderId);
+        if (num == list.size()){
+            return SysResult.build(300,"已经全部评论完",num);
+        }else {
+            return SysResult.build(200, "尚未评价完", num);
+        }
+//
+//        if (num == 0){
+//            return SysResult.build(200,"尚未评论",num);
+//        }else {
+//            return SysResult.build(202,"只准评论1次！",null);
+//        }
     }
 }

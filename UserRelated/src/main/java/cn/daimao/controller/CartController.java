@@ -146,6 +146,12 @@ public class CartController {
         return service.queryOrderDetail(orderId);
     }
 
+    @RequestMapping(value = "/finish",method = RequestMethod.GET)
+    @ApiOperation("评价订单完成，订单正式结束")
+    public SysResult finishOrder(String orderId){
+        return service.finishOrder(orderId);
+    }
+
 
 
 }

@@ -44,11 +44,19 @@
 
     <insert id="addComment" >
         insert into t_comment values (
-                                      #{commentId},#{productId},#{userId},#{commentContent},#{createTime},#{userName}
+                                      #{commentId},#{productId},#{userId},#{commentContent},#{createTime},#{userName},#{orderId}
                                       )
     </insert>
 
     <select id="showCommentProduct" resultType="pojo.ProductComment">
         select * from t_comment where product_id =#{productId}
+    </select>
+
+    <select id="countComment" resultType="int">
+        select count(comment_id) from t_comment where user_id = #{userId}  and order_id = #{orderId}
+    </select>
+
+    <select id="queryOrderItem" resultType="pojo.OrderItem">
+        select * from u_orderitem where order_id = #{orderId}
     </select>
 </mapper>

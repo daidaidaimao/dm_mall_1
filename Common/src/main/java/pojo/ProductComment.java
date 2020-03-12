@@ -14,4 +14,5 @@ public class ProductComment {
     private String commentContent;
     private Date createTime;
     private String userName;
+    private String orderId;
 }

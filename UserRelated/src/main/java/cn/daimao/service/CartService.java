@@ -268,4 +268,14 @@ public class CartService {
     public Order queryOrderDetail(String orderId) {
         return mapper.queryByOrderId(orderId);
     }
+
+    public SysResult finishOrder(String orderId) {
+        try {
+            mapper.changOrderStatus(orderId,4);
+            return SysResult.build(200,"success",null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return SysResult.build(201,e.toString(),null);
+        }
+    }
 }
