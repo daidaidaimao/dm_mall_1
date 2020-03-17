@@ -105,4 +105,8 @@
     <update id="changOrderStatus">
         update u_order set status = #{status} where order_id = #{orderId}
     </update>
+
+    <select id="queryUnpaidNum" resultType="int">
+        select count(order_id) from u_order where user_id = #{userId} and status = 0 ;
+    </select>
 </mapper>

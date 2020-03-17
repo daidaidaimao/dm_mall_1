@@ -72,14 +72,9 @@ public class UserService {
 //            }
 //            String nTicket = "TICKET"+System.currentTimeMillis()+exist.getUsername();
 //            redisTemplate.opsForValue().set(userloginlock,ticket,200, TimeUnit.SECONDS);
-            try {
-                String userJson = MapperUtils.MP.writeValueAsString(exist);
-                redisTemplate.opsForValue().set(ticket,userJson,LoginMessage.LoginTime,TimeUnit.SECONDS);
-                return ticket;
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-                return e.toString();
-            }
+            //                String userJson = MapperUtils.MP.writeValueAsString(exist);
+            redisTemplate.opsForValue().set(ticket,user.getIdentity(),LoginMessage.LoginTime,TimeUnit.SECONDS);
+            return ticket;
         }
     }
 

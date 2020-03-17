@@ -15,4 +15,6 @@ public class User {
     private String password;
     @ApiModelProperty("状态，0被封，1可用")
     private Integer status;
+    @ApiModelProperty("临时身份标识")
+    private String identity;
 }
