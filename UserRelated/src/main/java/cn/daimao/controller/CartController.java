@@ -152,6 +152,12 @@ public class CartController {
         return service.finishOrder(orderId);
     }
 
+    @RequestMapping(value = "/queryUnpaidNum",method = RequestMethod.GET)
+    @ApiOperation("查询用户未付款订单数量")
+    public SysResult queryUnpaidNum(String userId){
+        return service.queryUnpaidNum(userId);
+    }
+
 
 
 }

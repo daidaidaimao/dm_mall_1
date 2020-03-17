@@ -68,4 +68,6 @@ public interface CartMapper {
     Integer countUnpaidNum(String userId);
 
     void changOrderStatus(@Param("orderId") String orderId,@Param("status") Integer status);
+
+    int queryUnpaidNum(String userId);
 }

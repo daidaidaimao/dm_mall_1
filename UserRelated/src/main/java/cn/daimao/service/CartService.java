@@ -278,4 +278,12 @@ public class CartService {
             return SysResult.build(201,e.toString(),null);
         }
     }
+
+    public SysResult queryUnpaidNum(String userId) {
+        int num = mapper.queryUnpaidNum(userId);
+        if(num == 0)
+            return SysResult.ok();
+        else
+            return SysResult.build(201,"fail",null);
+    }
 }
