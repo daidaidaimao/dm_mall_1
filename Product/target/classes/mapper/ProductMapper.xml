@@ -39,7 +39,7 @@
     </select>
 
     <select id="totalFront" resultType="java.lang.Integer">
-        select count(product_id) from t_product where product_status =1
+        select count(product_id) from t_product
     </select>
 
     <select id="fenye" resultType="pojo.Product">
@@ -48,7 +48,7 @@
     </select>
 
     <select id="fenyeFront" resultType="pojo.Product">
-        select * from t_product where product_status = 1 limit #{start},#{num}
+        select * from t_product  limit #{start},#{num}
     </select>
 
 

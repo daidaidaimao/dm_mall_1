@@ -70,4 +70,6 @@ public interface CartMapper {
     void changOrderStatus(@Param("orderId") String orderId,@Param("status") Integer status);
 
     int queryUnpaidNum(String userId);
+
+    void updateSale(@Param("num") Integer num,@Param("productId")String productId);
 }

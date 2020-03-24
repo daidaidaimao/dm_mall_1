@@ -109,4 +109,8 @@
     <select id="queryUnpaidNum" resultType="int">
         select count(order_id) from u_order where user_id = #{userId} and status = 0 ;
     </select>
+
+    <update id="updateSale" >
+        update t_product set sale = sale + #{num} where product_id = #{productId}
+    </update>
 </mapper>

@@ -33,7 +33,7 @@ public class ProductService {
         product.setProductId(UUID.randomUUID().toString());
         product.setCategoryName("");
         product.setSale(0);
-        product.setQuill("暂无 待编辑");
+//        product.setQuill("暂无 待编辑");
         product.setProductStatus(ProductMessage.NotOnShelves);
         mapper.add(product);
     }

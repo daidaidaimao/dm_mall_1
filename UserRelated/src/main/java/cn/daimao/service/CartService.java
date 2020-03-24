@@ -99,6 +99,7 @@ public class CartService {
                 o.setProductImgurl(c.getProductImgurl());
                 o.setProductId(c.getProductId());
                 o.setOrderId(order.getOrderId());
+                mapper.updateSale(c.getProductNum(),c.getProductId());
                 list.add(o);
             }
             order.setOrderTime(new Date());
