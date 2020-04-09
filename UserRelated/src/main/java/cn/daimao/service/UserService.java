@@ -113,7 +113,7 @@ public class UserService {
 
     public SysResult addDetail(Person person) {
         try {
-            person.setAvatarUrl("");
+            //person.setAvatarUrl("");
             mapper.editDetail(person);
             return SysResult.build(200,LoginMessage.AddDetailSuccess,null);
         } catch (Exception e) {

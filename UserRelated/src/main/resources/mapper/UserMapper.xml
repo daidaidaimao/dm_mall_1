@@ -35,7 +35,7 @@
     </select>
 
     <select id="partDetail" resultType="pojo.Person">
-        select user_id,name,avatar_url,gender,email,phone from u_detail where user_id =#{userId}
+        select user_id,avatar_url,name,avatar_url,gender,email,phone from u_detail where user_id =#{userId}
     </select>
 
     <select id="showUser" resultType="pojo.User">
