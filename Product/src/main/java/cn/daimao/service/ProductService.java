@@ -128,6 +128,22 @@ public class ProductService {
         return result;
     }
 
+    public String queryCategoryName(Integer categoryId) {
+        String name ="";
+        String pid = mapper.queryParent(categoryId);
+        for(String s : pid.split(",")){
+            Category c = null;
+            try {
+                c = mapper.queryNode(Integer.parseInt(s));
+                if (c!=null&&!c.getName().equals("商品分类"))
+                    name = c.getName()+"/"+name;
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return name;
+    }
+
 //    public SysResult addApproval(Approval approval) {
 //        String name ="";
 //        Product p = approval.getProductMessage();

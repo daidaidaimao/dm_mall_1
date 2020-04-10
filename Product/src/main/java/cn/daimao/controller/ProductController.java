@@ -105,4 +105,10 @@ public class ProductController {
     public SysResult changgeStatus(Product product){
         return service.changeStatus(product);
     }
+
+    @RequestMapping(value = "/queryCategoryName",method = RequestMethod.GET)
+    @ApiOperation("查询当前分类节点的name 拼接父节点")
+    public String queryCategoryName(Integer categoryId){
+        return service.queryCategoryName(categoryId);
+    }
 }
