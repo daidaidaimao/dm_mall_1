@@ -7,6 +7,7 @@ import pojo.Order;
 import pojo.OrderItem;
 import pojo.Person;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -72,4 +73,6 @@ public interface CartMapper {
     int queryUnpaidNum(String userId);
 
     void updateSale(@Param("num") Integer num,@Param("productId")String productId);
+
+    List<Order> searchOrder(@Param("orderId") String orderId, @Param("startDtm") String startDtm, @Param("endDtm") String endDtm, @Param("status") Integer status, @Param("userId") String userId);
 }

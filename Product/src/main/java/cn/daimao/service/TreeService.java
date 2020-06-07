@@ -1,9 +1,12 @@
 package cn.daimao.service;
 
 import cn.daimao.mapper.TreeMapper;
+
+import com.alibaba.druid.support.json.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pojo.Category;
+import pojo.OrderDaily;
 import pojo.Product;
 import utils.PageResult;
 import utils.SysResult;
@@ -150,5 +153,62 @@ public class TreeService {
             e.printStackTrace();
             return SysResult.build(201,e.toString(),null);
         }
+    }
+
+    public SysResult getCateDate() {
+        List<Integer> plist = mapper.getFirst();
+        Map<String,Integer> map = new HashMap<>();
+        for(Integer i : plist){
+//            String c = mapper.queryChild(i);
+//            String name = mapper.getCateName(i);
+////            map.put(name,0);
+//            int sum = 0;
+//            for(String s : c.split(",")){
+//                int a = Integer.parseInt(s);
+//                if(null!=mapper.getSale(a)){
+//                    sum += mapper.getSale(a);
+//                }
+//            }
+//            map.put(name,sum);
+//            map = getChildSale(i);
+            map.putAll(getChildSale(i));
+        }
+//        JSONUtils.toJSONString(map);
+        return SysResult.build(200,"",map);
+    }
+    public Map<String,Integer> getChildSale(Integer id){
+        Map<String,Integer> map = new HashMap<>();
+        String c = mapper.queryChild(id);
+        String name = mapper.getCateName(id);
+//            map.put(name,0);
+        int sum = 0;
+        for(String s : c.split(",")){
+            int a = Integer.parseInt(s);
+            if(null!=mapper.getSale(a)){
+                sum += mapper.getSale(a);
+            }
+        }
+        map.put(name,sum);
+        return map;
+    }
+
+    public SysResult getOne(String name) {
+        Category category = mapper.getId(name);
+        Map<String, Integer> map = new HashMap<>();
+//        String s = mapper.queryChild(id);
+        List<Category> list = mapper.queryParent(category.getId());
+        for(Category c : list){
+            map.putAll(getChildSale(c.getId()));
+        }
+
+        return SysResult.build(200,"",map);
+    }
+
+    public SysResult getorderE() {
+        List<OrderDaily> list = mapper.echartsOrder();
+//        for(OrderDaily o : list){
+//            String date = o.getDate();
+//        }
+        return SysResult.build(200,"",list);
     }
 }

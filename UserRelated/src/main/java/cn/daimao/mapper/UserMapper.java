@@ -2,10 +2,7 @@ package cn.daimao.mapper;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
-import pojo.OrderItem;
-import pojo.Person;
-import pojo.ProductComment;
-import pojo.User;
+import pojo.*;
 
 import java.util.List;
 
@@ -40,4 +37,10 @@ public interface UserMapper {
     Integer countComment(@Param("userId") String userId,@Param("orderId") String orderId);
 
     List<OrderItem> queryOrderItem(String orderId);
+
+    User queryByUserId(String userId);
+
+    void changStatus(@Param("userId") String userId,@Param("status") int status);
+
+    List<Order> queryOrder(String userId);
 }

@@ -113,4 +113,17 @@
     <update id="updateSale" >
         update t_product set sale = sale + #{num} where product_id = #{productId}
     </update>
+
+    <select id="searchOrder" resultType="pojo.Order">
+        select * from u_order where user_id = #{userId}
+        <if test="orderId!=null and orderId !=''">
+            and order_id like concat('%',#{orderId},'%')
+        </if>
+        <if test="startDtm!=null and endDtm !=null and startDtm !='' and endDtm !=''">
+            and order_time between STR_TO_DATE(#{startDtm},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{endDtm},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="status !=null ">
+            and status =#{status}
+        </if>
+    </select>
 </mapper>

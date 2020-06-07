@@ -17,6 +17,8 @@ import utils.PageResult;
 import utils.SysResult;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -286,5 +288,50 @@ public class CartService {
             return SysResult.ok();
         else
             return SysResult.build(201,"fail",null);
+    }
+
+    public SysResult deleteOrderByOrderId(String userId, String orderId) {
+        List<Order> orders = mapper.queryOrder(userId);
+        Order o = mapper.queryByOrderId(orderId);
+        if(orders.contains(o)) {
+            mapper.deleteOrder(orderId);
+            return SysResult.build(200, "", null);
+        }else{
+            return SysResult.build(201, "", null);
+        }
+    }
+
+    public SysResult alipayCallback(String orderId) {
+        Order order = mapper.queryByOrderId(orderId);
+        if (order.getStatus() ==0){
+            mapper.changOrderStatus(orderId,1);
+            return SysResult.build(200,"",null);
+        }else {
+            return SysResult.build(201,"error",null);
+        }
+    }
+
+    public SysResult orderSearch(String orderId, String startDtm, String endDtm, Integer status,String userId) throws JsonProcessingException   {
+
+//        System.out.println(status);
+//        System.out.println(startDtm+endDtm);
+//        SimpleDateFormat sdf =   new SimpleDateFormat( " yyyy-MM-dd  " );
+//        Date s = sdf.parse(startDtm);
+//        Date e = sdf.parse(endDtm);
+        List<Order> mlist = mapper.searchOrder(orderId,startDtm,endDtm,status,userId);
+        List<Order> olist = mapper.pageOrder(0,10,userId);
+        ObjectMapper om = new ObjectMapper();
+        if (olist != null){
+            for (Order o:olist){
+                List<OrderItem> list = mapper.queryOrderItem(o.getOrderId());
+//                System.out.println(list);
+                String pJson = om.writeValueAsString(list);
+//                System.out.println(pJson);
+                o.setItem(list);
+                o.setClist(pJson);
+            }
+        }
+//        mlist.set
+        return SysResult.build(200,"",mlist);
     }
 }

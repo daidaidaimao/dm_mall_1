@@ -2,6 +2,7 @@ package cn.daimao.controller;
 
 import cn.daimao.service.TreeService;
 import io.swagger.annotations.ApiOperation;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,5 +60,22 @@ public class TreeController {
 //    懒得删了*2
     public SysResult queryParent(Integer id){
         return service.queryParent(id);
+    }
+
+    @RequestMapping(value = "/getCateDate",method = RequestMethod.GET)
+    @ApiOperation("获得饼状图数据")
+    public SysResult getCateDate(){
+        return service.getCateDate();
+    }
+    @RequestMapping(value = "/getOne",method = RequestMethod.GET)
+    @ApiOperation("获得单个分类的总销量")
+    public SysResult getOne(String name){
+        return service.getOne(name);
+    }
+
+    @RequestMapping(value = "/getOrderE",method = RequestMethod.GET)
+    @ApiOperation("每日成交量")
+    public SysResult getOrderE(){
+        return service.getorderE();
     }
 }

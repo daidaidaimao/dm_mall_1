@@ -1,13 +1,15 @@
 package cn.daimao.controller;
 
 import cn.daimao.service.UserService;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.internal.util.AlipaySignature;
+import com.google.common.collect.Maps;
 import config.LoginMessage;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
 import pojo.Person;
 import pojo.ProductComment;
 import pojo.User;
@@ -16,7 +18,9 @@ import utils.SysResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -52,6 +56,7 @@ public class UserController {
     public SysResult out(String ticket){
             return service.remove(ticket);
     }
+
     @RequestMapping(value = "query/{ticket}",method = RequestMethod.GET)
     @ApiOperation("向redis中查询登陆验证是否还在，在就续约，不在就踢下线")
     public SysResult queryUser(@PathVariable String ticket,HttpServletRequest request,HttpServletResponse response){
@@ -122,4 +127,24 @@ public class UserController {
     public SysResult whetherComment(String userId,String orderId){
         return service.whetherComment(userId,orderId);
     }
+
+    @RequestMapping(value = "/changeStatus",method = RequestMethod.GET)
+    @ApiOperation("封禁/解封用户")
+    public SysResult changeStatus(String userId){
+        return service.changeStatus(userId);
+    }
+
+    @RequestMapping(value="/alipay",method = RequestMethod.GET)
+    @ApiOperation("支付宝付款沙箱测试")
+    public SysResult aliPay(String orderId,String pName,Double orderMoney) throws AlipayApiException {
+        return service.aliPay(orderId,pName,orderMoney);
+    }
+
+    @RequestMapping(value = "/recommend",method = RequestMethod.GET)
+    @ApiOperation("基于用户的协同过滤推荐算法")
+    public SysResult recommend(String logUserId){
+        return service.recommend(logUserId);
+    }
+
+
 }

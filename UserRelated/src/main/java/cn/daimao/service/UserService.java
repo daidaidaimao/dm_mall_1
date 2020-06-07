@@ -1,6 +1,11 @@
 package cn.daimao.service;
 
+import cn.daimao.config.AlipayConfig;
 import cn.daimao.mapper.UserMapper;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import config.LoginMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,17 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import org.springframework.stereotype.Service;
-import pojo.OrderItem;
-import pojo.Person;
-import pojo.ProductComment;
-import pojo.User;
+import pojo.*;
 import utils.MapperUtils;
 import utils.SysResult;
 
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -50,7 +50,8 @@ public class UserService {
         }
     }
 
-    public String login(User user) {
+    public String
+    login(User user) {
         User exist = mapper.queryExist(user);
         Integer u =mapper.queryByName(user.getUsername());
         if( exist !=null && exist.getStatus() ==0){
@@ -185,7 +186,13 @@ public class UserService {
     }
 
     public List<ProductComment> showCommentProduct(String productId) {
-        return mapper.showCommentProduct(productId);
+        List<ProductComment> list =  mapper.showCommentProduct(productId);
+        for(ProductComment p :list){
+            String userId = p.getUserId();
+            Person person = mapper.queryDetail(userId);
+            p.setAurl(person.getAvatarUrl());
+        }
+        return list;
     }
 
     public SysResult whetherComment(String userId, String orderId) {
@@ -202,5 +209,101 @@ public class UserService {
 //        }else {
 //            return SysResult.build(202,"只准评论1次！",null);
 //        }
+    }
+
+    public SysResult changeStatus(String userId) {
+        User user = mapper.queryByUserId(userId);
+        if (user.getStatus() == 1){
+            mapper.changStatus(userId,0);
+        }else{
+            mapper.changStatus(userId,1);
+        }
+        return SysResult.build(200,"",null);
+    }
+
+    public SysResult aliPay(String orderId, String pName, Double orderMoney) throws AlipayApiException {
+        //获得初始化的AlipayClient
+        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl,
+                AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json",
+                AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
+        //设置请求参数
+        AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
+        alipayRequest.setReturnUrl(AlipayConfig.return_url);
+        alipayRequest.setNotifyUrl(AlipayConfig.notify_url);
+
+        //商户订单号，商户网站订单系统中唯一订单号，必填
+        //付款金额，必填
+        String total_amount = orderMoney.toString();
+        //订单名称，必填
+        //商品描述，可空
+        String body = "商品描述";
+
+        alipayRequest.setBizContent("{\"out_trade_no\":\"" + orderId + "\","
+                + "\"total_amount\":\"" + total_amount + "\","
+                + "\"subject\":\"" + pName + "\","
+                + "\"body\":\"" + body + "\","
+                + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
+        String result = alipayClient.pageExecute(alipayRequest).getBody();
+        return SysResult.build(200,"",result);
+    }
+
+
+    public SysResult recommend(String logUserId) {
+        List<User> uList = mapper.showUser();
+
+        Map<String,Double> result = new HashMap<>();
+        // 交集 和并集 的个数
+        for(User u : uList){
+            int intersection = 0;
+            int unio = 0;
+            int diffSet = 0;
+            //拿到非当前登录用户进行比较
+            if(!u.getUserId().equals(logUserId)){
+                String tUserId = u.getUserId();
+                String temp = "";
+
+                List<Order> lorder = mapper.queryOrder(logUserId);
+                List<Order> torder = mapper.queryOrder(tUserId);
+                Map<String,Integer> lmap = getpList(lorder);
+                Map<String,Integer> tmap = getpList(torder);
+                for(String key1 : lmap.keySet()){
+                    if(tmap.containsKey(key1)){
+                        intersection++;
+                    }else{
+                        diffSet++;
+                    }
+                }
+                for(String key2: tmap.keySet()){
+                    if(!lmap.containsKey(key2)){
+                        diffSet++;
+                        temp = key2+","+temp;
+                    }
+                }
+                unio = intersection + diffSet;
+                double res  = (double) intersection / unio ;
+                result.put(temp,res);
+            }
+        }
+        List<Map.Entry<String,Double>> list = new ArrayList<>(result.entrySet());
+        list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        return SysResult.build(200,"",list);
+
+    }
+
+    public Map<String,Integer> getpList(List<Order> list){
+//        List<Product> result ;
+        Map<String,Integer> map = new HashMap<>();
+        for (Order o :list){
+            List<OrderItem> plist = mapper.queryOrderItem(o.getOrderId());
+            for(OrderItem p : plist){
+                if(!map.containsKey(p.getProductId())) {
+                    map.put(p.getProductId(), p.getProductNum());
+                }else{
+                    Integer value = map.get(p.getProductId())+p.getProductNum();
+                    map.put(p.getOrderId(),value);
+                }
+            }
+        }
+        return map;
     }
 }

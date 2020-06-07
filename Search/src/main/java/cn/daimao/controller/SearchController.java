@@ -10,17 +10,18 @@ import pojo.Student;
 import java.util.List;
 
 @RestController
+@RequestMapping("search")
 public class SearchController {
     @Autowired
     private SearchService service;
 
-    @RequestMapping("/search/createIndex")
+    @RequestMapping("/createIndex")
     public String createIndex(){
         service.createIndex();
         return "success";
     }
 
-    @RequestMapping("/search/query")
+    @RequestMapping("/query")
     public List<Product> queryStudent(String query){
         return service.query(query);
     }

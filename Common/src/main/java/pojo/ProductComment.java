@@ -16,4 +16,5 @@ public class ProductComment {
     private String userName;
     private String orderId;
     private Integer score;
+    private String aurl;
 }

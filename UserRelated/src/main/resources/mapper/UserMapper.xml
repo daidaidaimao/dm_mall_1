@@ -59,4 +59,16 @@
     <select id="queryOrderItem" resultType="pojo.OrderItem">
         select * from u_orderitem where order_id = #{orderId}
     </select>
+
+    <select id="queryByUserId" resultType="pojo.User">
+        select * from u_user where user_id= #{userId}
+    </select>
+
+    <update id="changStatus">
+        update u_user set status =#{status} where user_id = #{userId}
+    </update>
+
+    <select id="queryOrder" resultType="pojo.Order">
+        select * from u_order where user_id = #{userId} and status in (1,2,3,4)
+    </select>
 </mapper>

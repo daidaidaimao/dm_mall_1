@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonArrayFormatVisitor;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import utils.PageResult;
 import utils.SysResult;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,6 +159,29 @@ public class CartController {
     public SysResult queryUnpaidNum(String userId){
         return service.queryUnpaidNum(userId);
     }
+
+    @RequestMapping(value = "/deleteOrderByOrderId",method = RequestMethod.GET)
+    @ApiOperation("删除订单API，但是具体实现还在想")
+    public SysResult deleteOrderByOrderId(String userId,String orderId){
+        //多传一个userId  双重验证
+        return service.deleteOrderByOrderId(userId,orderId);
+    }
+
+    //支付宝回调函数
+    @RequestMapping(value = "alipay_callback",method = RequestMethod.GET)
+    @ApiOperation("支付成功回调方法")
+    public SysResult alipayCallback(String orderId) {
+
+        return service.alipayCallback(orderId);
+    }
+
+    @RequestMapping(value = "orderSearch",method = RequestMethod.GET)
+    @ApiOperation("订单页面的模糊多条件查询")
+    public SysResult orderSearch(String orderId,String startDtm,String endDtm,Integer status,String userId) throws JsonProcessingException {
+        return service.orderSearch(orderId,startDtm,endDtm,status,userId);
+
+    }
+    
 
 
 

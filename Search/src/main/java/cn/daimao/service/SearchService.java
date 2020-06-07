@@ -36,7 +36,7 @@ public class SearchService {
 
     public void createIndex() {
         IndicesAdminClient client = transportClient.admin().indices();
-        IndicesExistsRequestBuilder request = client.prepareExists("product");
+        IndicesExistsRequestBuilder request = client.prepareExists("product2");
         IndicesExistsResponse response = request.get();
         if(!response.isExists()){
             //说明不存在
@@ -47,9 +47,10 @@ public class SearchService {
                         .startObject("product")
                         .startObject("properties")
                         .startObject("productName").field("type","text").field("analyzer","ik_max_word").endObject()
+                        .startObject("productDescription").field("type","text").field("analyzer","ik_max_word").endObject()
                         .endObject()
                         .endObject();
-                PutMappingRequest mappingRequest = Requests.putMappingRequest("student3").type("student").source(mapping);
+                PutMappingRequest mappingRequest = Requests.putMappingRequest("product").type("product").source(mapping);
                 transportClient.admin().indices().putMapping(mappingRequest).actionGet();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -61,7 +62,7 @@ public class SearchService {
         for (Product s : pList){
             try {
                 String pJson = MapperUtils.MP.writeValueAsString(s);
-                IndexRequestBuilder requestBuilder = transportClient.prepareIndex("product", "product", s.getProductId());
+                IndexRequestBuilder requestBuilder = transportClient.prepareIndex("product2", "product", s.getProductId());
                 requestBuilder.setSource(pJson).get();
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
@@ -71,8 +72,8 @@ public class SearchService {
 
     public List<Product> query(String query) {
         List<Product> slist =new ArrayList<>();
-        MatchQueryBuilder query1= QueryBuilders.matchQuery("other",query);
-        SearchRequestBuilder request = transportClient.prepareSearch("product").setQuery(query1);
+        QueryBuilder query1 =QueryBuilders.multiMatchQuery(query,"productName","productDescription");
+        SearchRequestBuilder request = transportClient.prepareSearch("product2").setQuery(query1);
         SearchResponse response = request.get();
         SearchHits topHit = response.getHits();
         SearchHit[] hits = topHit.getHits();

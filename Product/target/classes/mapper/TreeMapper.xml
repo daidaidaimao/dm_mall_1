@@ -7,10 +7,6 @@
     <select id="queryByCate" resultType="pojo.Product">
         select * from t_product where product_category = #{productCategory}
     </select>
-
-
-
-
     <select id="total" resultType="java.lang.Integer">
         select count(product_id) from t_product where product_category=#{productCategory}
     </select>
@@ -35,6 +31,29 @@
 
     <select id="queryChild" resultType="java.lang.String">
         select getChildList(#{id}) as ids
+    </select>
+
+    <select id="getFirst" resultType="java.lang.Integer">
+        select id from t_category where parent_id = 0
+    </select>
+
+    <select id="getSale" resultType="java.lang.Integer">
+        select sum(sale) from t_product where product_category = #{id}
+    </select>
+
+    <select id="getCateName" resultType="java.lang.String">
+        select name from t_category where id = #{id}
+    </select>
+
+    <select id="getId" resultType="pojo.Category">
+        select * from t_category where name = #{name}
+    </select>
+
+    <select id="echartsOrder" resultType="pojo.OrderDaily">
+        select count(1) sum,DATE_FORMAT(order_time,'%Y-%m-%d') date
+        from u_order
+        where status in (1,2,3,4)
+        GROUP BY DATE_FORMAT(order_time,'%Y-%m-%d')
     </select>
 
 
